@@ -1,0 +1,203 @@
+
+.container {
+  height: 500px;
+  width: 90%;
+  background-color: #C8EAD3;
+  font-family: 'Open Sans', sans-serif;
+
+}
+
+.header {
+  background-color: #C8EAD3;
+  position: relative;
+  padding: 10px;
+  margin: 10px;
+  width: 100%;
+  height: 50px;
+  text-align: center;
+}
+
+#leave {
+  position: absolute;
+  font-size: 30px;
+  top: 20px;
+  left: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.chat_window {
+  padding: 5px 60px;
+  position: relative;
+  background-color: #695958;
+  width: 100%;
+  height: 650px;
+  border: 2px solid #CFFFE5;
+  border-radius: 5px;
+  overflow: scroll;
+
+}
+.message_container {
+  background-color:  #CFFFE5;
+  position: relative;
+  margin: 10px;
+  width: 96%;
+  height: 100px;
+  border: 2px solid #C8EAD3;
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  overflow: scroll;
+
+}
+
+.username {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: black;
+  border: none;
+  color: white;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 6px;
+
+}
+
+.delete_message{
+  position: absolute;
+  right: 0;
+  background-color: #B6C8A9; 
+  border: none;
+  color: white;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  border-radius: 6px;
+
+}
+
+.message_text {
+  position: absolute;
+  top: 10px;
+  padding: 5px;
+
+}
+
+.time_stamp {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  border: none;
+  color: #695958;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+
+}
+
+.input_field {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  position: relative;
+  top: 30px;
+  background-color: #C8EAD3;
+  padding: 5px 60px;
+  margin: 10px;
+  
+  height: 100px;
+  border-radius: 5px;
+
+}
+
+.form_control {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+
+}
+
+.form_control input {
+  width: 100%;
+
+}
+
+
+
+input {
+  width: 90%;
+  height: 30px;
+  border: 2px solid #C8EAD3;
+  border-radius: 8px;
+  margin: 5px;
+  font-size: 15px;
+  font-family: 'DM Mono', monospace;
+
+}
+
+input[type=text]:focus {
+  border: 3px solid #C8EAD3;
+}
+#send {
+  
+  height: 36px;
+  background-color: #B6C8A9; 
+  border: 2px solid #C8EAD3;
+  color: white;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+#send:disabled {
+   opacity: 0.6;
+}
+
+.channels {
+  padding: 5px 60px;
+  position: relative;
+  top: 50px;
+
+}
+
+
+a:link, a:visited {
+  background-color: #B6C8A9;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border: 2px solid #C8EAD3;
+  border-radius: 8px;
+}
+
+a:hover, a:active {
+  background-color: #d1d9cc;
+}
+
+#create_channel {
+  background-color: #B6C8A9;
+  position: relative;
+  left: 25px;
+  font-size: 24px;
+  padding: 14px 40px;
+  border-radius: 8px;
+  width: 95%;
+  float: center;
+  text-align: center;
+}
+
+#create_channel:hover {
+  background-color: #d1d9cc;
+  color: white;
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Channels</title>
+
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+		<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300&family=Open+Sans&display=swap" rel="stylesheet">
+	</head>
+	<body class="container">
+		<div class="header">
+			<h1>Hello, {{ username }} </h1>
+			<a href="{{ url_for ('change_username') }}">change name</a>
+		</div>
+		<div class="channels">
+			<h2>Choose from existing channels</h2>
+				{% if not channels_ids %}
+				<h3>No channels</h3>
+				{% endif %}
+
+				{% for id in channels_ids %}
+				<a href="{{ url_for('channel', channel_id=id) }}">{{ channels_ids[id] }}</a>
+				{% endfor %}
+		</div>
+		<div class="channels">
+			<h2>Create a channel</h2>
+			<form action="{{ url_for('create_channel') }}" method="post" class="form_control">
+				<input type="text" name="channel_name" autocomplete="off" autofocus="">
+				<button type="submit" id="create_channel">Create</button>
+			</form>
+		</div>
+	</body>
+</html>
