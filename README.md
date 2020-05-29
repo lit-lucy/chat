@@ -8,7 +8,7 @@ You need to have Python 3.6 or higher and pip3 installed.
 1. Download repository 
 
 ```bash
-	git clone https://github.com/lit-lucy/chat.git
+git clone https://github.com/lit-lucy/chat.git
 ```
 
 2. In a terminal window, navigate into directory where file was cloned.
@@ -16,15 +16,15 @@ You need to have Python 3.6 or higher and pip3 installed.
 3. Run
 
 ```bash
-	pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 4. Set up Flask application and run it.
 
 ```bash
-	export FLASK_APP=application.py
+export FLASK_APP=application.py
 
-	flask run
+flask run
 ```
 
 5. Navigate to URL provided by Flask. 
