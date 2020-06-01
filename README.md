@@ -13,18 +13,19 @@ git clone https://github.com/lit-lucy/chat.git
 
 2. In a terminal window, navigate into directory where file was cloned.
 
-3. Run
 
-```bash
-pip3 install -r requirements.txt
-```
-
-4. Create and activate a virtual environment
+3. Create and activate a virtual environment
 
 ```bash
 python3 -m venv venv
 
 . venv/bin/activate
+```
+
+4. Run
+
+```bash
+pip3 install -r requirements.txt
 ```
 
 5. Set up Flask application and run it.
