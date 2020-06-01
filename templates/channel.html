@@ -16,19 +16,21 @@
 	</head>
 	<body class="container">
 		<div class="header">
-			<h2>{{ channel_name }}</h2>
+			<h2>{{ channel['name'] }}</h2>
 			<a href="/"><span id="leave"role="button">&#8592;</span></a>
 		</div>
 
 		<div class="chat_window" id="messages">
-			{% for message_id in messages.keys() %}
-			<div class="message_container" id="{{ message_id }}">
-				<span class="username"> {{ messages[message_id]['username'] }} </span>
-				<button class="delete_message" data-message-id="{{ message_id }}">DELETE</button>
-				<p class="message_text"> {{ messages[message_id]['message_text'] }} </p>
-				<span class="time_stamp"> {{ messages[message_id]['time'] }} </span>
+			{% if 'messages' in channel %}
+			{% for message in channel['messages'].values() %}
+			<div class="message_container" id="{{ message['id'] }}">
+				<span class="username"> {{ message['username'] }} </span>
+				<button class="delete_message" data-message-id="{{ message['id'] }}">DELETE</button>
+				<p class="message_text"> {{ message['message_text'] }} </p>
+				<span class="time_stamp"> {{ message['time'] }} </span>
 			</div>
 			{% endfor %}
+			{% endif %}
 		</div>
 
 		<div class="input_field">

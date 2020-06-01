@@ -26,14 +26,14 @@ Session(app)
 # each channel stores no more than 100 messages.
 channels = {} 
 # Mapping channel id to its name
-channels_ids = {}
+#channels_ids = {}
 
 @app.route("/")
 def index():
     # Takes recently logged in user to the index page
     if "username" in session:
         username = session["username"]
-        return render_template("index.html", username=username, channels_ids=channels_ids)
+        return render_template("index.html", username=username, channels=channels)
 
     # Asks new user to login
     return render_template("login.html")
@@ -47,44 +47,46 @@ def login():
 
 @app.route("/change_username", methods=["GET"])
 def change_username():
+    session.pop("user", None)
     return render_template("login.html")
 
 @app.route("/create_channel", methods=["POST"])
 def create_channel():
     # Get channel name from user's input
-    channel_name = str(request.form.get("channel_name"))
+    channel_name = request.form.get("channel_name")
 
     # Check if this channel name already exists
-    if channel_name in channels_ids.values():
-        return render_template("error.html", message="This channel name already exists")
+    for channel in channels.values():
+        if channel["name"] == channel_name:
+            return render_template("error.html", message="This channel name already exists")
 
     # Generate a random channel id
-    channel_id = uuid.uuid4()
-    channel_id = str(channel_id)
+    channel_id = str(uuid.uuid4())
 
     # Map channel id to its name
-    channels_ids[channel_id] = channel_name
+    #channels_ids[channel_id] = channel_name
 
-    # Initiate an ordered dictionary of messages for this channel
-    message_dict = OrderedDict()
-    channels[channel_id] = message_dict
+    # Add channel
+    channels[channel_id] = {"name": channel_name, "id": channel_id}
+
+    # message_dict = OrderedDict()
+    # channels[channel_id] = message_dict
     
     return redirect(url_for("channel", channel_id=channel_id))
 
 @app.route("/channel/<channel_id>")
 def channel(channel_id):
-    try:
-        # Get dictionary of messages for this channel
-        messages = channels[channel_id]
+    # Check if channel_id exists
+    if channel_id not in channels:
+        return render_template("error.html", message="channel doesn't exist")
 
-        # Save current channel to user sessions 
-        session["current_channel"] = channel_id
+    # Get all information for this channel (id, name, messages)
+    channel = channels[channel_id]
 
-        channel_name = channels_ids[channel_id]
-    except KeyError:
-        return render_template("error.html", message="something went wrong")
+    # Save current channel to user sessions 
+    session["current_channel"] = channel_id
 
-    return render_template("channel.html", channel_name=channel_name, messages=messages)
+    return render_template("channel.html", channel=channel)
 
 @socketio.on("joined")
 def on_join():
@@ -92,7 +94,7 @@ def on_join():
     username = session["username"]
     room = session["current_channel"]
     join_room(room)
-    send(username + ' has entered the room.', room=room)
+    send(username + " has entered the room.", room=room)
 
 @socketio.on("leave")
 def on_leave():
@@ -100,7 +102,7 @@ def on_leave():
     username = session["username"]
     room = session["current_channel"]
     leave_room(room)
-    send(username + ' has left the room.', room=room)
+    send(username + " has left the room.", room=room)
 
 @socketio.on("send message")
 def send_message(data):
@@ -109,27 +111,30 @@ def send_message(data):
     channel_id = room
 
     # Generate a message id
-    message_id  = uuid.uuid4()
-    message_id = str(message_id)
+    message_id  = str(uuid.uuid4())
 
     # Compile a message
     message_text = data["message"]
 
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    message = {"message_text": message_text, "username": session["username"], "time": time}
+
+    # 
+    channels[channel_id]["messages"] = OrderedDict()
+
+    message = {"id": message_id, "message_text": message_text, "username": session["username"], "time": time}
 
     # Check is there already 100 messages in this channel
     # and delete if necessary 
 
-    while len(channels[channel_id]) >= 100:
+    while len(channels[channel_id]["messages"]) >= 100:
         # Delete the first message (FIFO)
-        channels[channel_id].popitem(0)
+        channels[channel_id]["messages"].popitem(0)
 
     # Add message id and message to ordered dictionary    
 
-    channels[channel_id][message_id] = message
+    channels[channel_id]["messages"][message_id] = message
 
-    emit("announce message", {"message": message, "message_id": message_id}, room=room, broadcast=True)   
+    emit("announce message", message=message, room=room, broadcast=True)   
 
 @socketio.on("delete message")
 def delete_message(data):
@@ -137,14 +142,14 @@ def delete_message(data):
     channel_id = session["current_channel"]
     message_id = data["message_id"]
 
-    if channels[channel_id][message_id]["username"] != session["username"]:
+    if channels[channel_id]["messages"][message_id]["username"] != session["username"]:
         # Emit an event with notification that user can't delete this message
         # only to this user
         room = request.sid
         emit("user cant delete message", room=room)
     else:
         # Delete the message
-        channels[channel_id].pop(message_id)
+        channels[channel_id]["messages"].pop(message_id)
 
         room = channel_id
 

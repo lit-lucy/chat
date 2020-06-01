@@ -70,24 +70,24 @@ document.addEventListener('DOMContentLoaded', () => {
     
         const message = document.createElement('div');
         message.className = 'message_container';
-        message.setAttribute('id', data.message_id);
+        message.setAttribute('id', data.id);
 
         const username = document.createElement('span');
         username.className = 'username';
-        username.innerHTML = data.message.username;
+        username.innerHTML = data.username;
 
         const message_text = document.createElement('p');
         message_text.className = 'message_text';
-        message_text.innerHTML = data.message.message_text;
+        message_text.innerHTML = data.message_text;
 
         const time = document.createElement('span');
         time.className = 'time_stamp';
-        time.innerHTML = data.message.time;
+        time.innerHTML = data.time;
 
         const delete_btn = document.createElement('button');
         delete_btn.className = 'delete_message';
         delete_btn.innerHTML = 'DELETE';
-        delete_btn.setAttribute('data-message-id', data.message_id);
+        delete_btn.setAttribute('data-message-id', data.id);
 
         // Add delete function
         delete_btn.onclick = function() {
