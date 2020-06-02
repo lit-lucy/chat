@@ -67,27 +67,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // When a new message is announced, add it to chat window
     socket.on('announce message', data => {
+
+        console.log(data['message'])
     
         const message = document.createElement('div');
         message.className = 'message_container';
-        message.setAttribute('id', data.id);
+        message.setAttribute('id', data['message']['id']);
 
         const username = document.createElement('span');
         username.className = 'username';
-        username.innerHTML = data.username;
+        username.innerHTML = data['message']['username'];
 
         const message_text = document.createElement('p');
         message_text.className = 'message_text';
-        message_text.innerHTML = data.message_text;
+        message_text.innerHTML = data['message']['message_text'];
 
         const time = document.createElement('span');
         time.className = 'time_stamp';
-        time.innerHTML = data.time;
+        time.innerHTML = data['message']['time'];
 
         const delete_btn = document.createElement('button');
         delete_btn.className = 'delete_message';
         delete_btn.innerHTML = 'DELETE';
-        delete_btn.setAttribute('data-message-id', data.id);
+        delete_btn.setAttribute('data-message-id', data['message']['id']);
 
         // Add delete function
         delete_btn.onclick = function() {

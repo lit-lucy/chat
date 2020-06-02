@@ -25,8 +25,7 @@ Session(app)
 # A dictionary of all channels with messages.
 # each channel stores no more than 100 messages.
 channels = {} 
-# Mapping channel id to its name
-#channels_ids = {}
+
 
 @app.route("/")
 def index():
@@ -48,6 +47,7 @@ def login():
 @app.route("/change_username", methods=["GET"])
 def change_username():
     session.pop("user", None)
+    session.pop("current_channel", None)
     return render_template("login.html")
 
 @app.route("/create_channel", methods=["POST"])
@@ -63,14 +63,8 @@ def create_channel():
     # Generate a random channel id
     channel_id = str(uuid.uuid4())
 
-    # Map channel id to its name
-    #channels_ids[channel_id] = channel_name
-
     # Add channel
-    channels[channel_id] = {"name": channel_name, "id": channel_id}
-
-    # message_dict = OrderedDict()
-    # channels[channel_id] = message_dict
+    channels[channel_id] = {"name": channel_name, "id": channel_id, "messages": OrderedDict()}
     
     return redirect(url_for("channel", channel_id=channel_id))
 
@@ -118,9 +112,6 @@ def send_message(data):
 
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # 
-    channels[channel_id]["messages"] = OrderedDict()
-
     message = {"id": message_id, "message_text": message_text, "username": session["username"], "time": time}
 
     # Check is there already 100 messages in this channel
@@ -134,7 +125,7 @@ def send_message(data):
 
     channels[channel_id]["messages"][message_id] = message
 
-    emit("announce message", message=message, room=room, broadcast=True)   
+    emit("announce message", {"message": message}, room=room, broadcast=True)   
 
 @socketio.on("delete message")
 def delete_message(data):
