@@ -19,7 +19,7 @@ socketio = SocketIO(app)
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = True 
 app.config["SESSION_TYPE"] = "filesystem"
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 #?? Is it right?
+#app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 #?? Is it right?
 Session(app)
 
 # A dictionary of all channels with messages.
@@ -44,10 +44,11 @@ def login():
 
     return redirect(url_for("index"))
 
-@app.route("/change_username", methods=["GET"])
-def change_username():
-    session.pop("user", None)
-    session.pop("current_channel", None)
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.clear()
+    # session.pop("username", None)
+    # session.pop("current_channel", None)
     return render_template("login.html")
 
 @app.route("/create_channel", methods=["POST"])
@@ -72,7 +73,7 @@ def create_channel():
 def channel(channel_id):
     # Check if channel_id exists
     if channel_id not in channels:
-        return render_template("error.html", message="channel doesn't exist")
+        return render_template("error.html", message="Channel doesn't exist")
 
     # Get all information for this channel (id, name, messages)
     channel = channels[channel_id]
