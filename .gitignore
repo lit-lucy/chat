@@ -1,1 +1,7 @@
 .DS_Store
+Garbage
+__pycache__
+design
+flask_session
+get-pip.py
+messaging
