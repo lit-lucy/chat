@@ -27,8 +27,7 @@ python3 -m venv venv
 pip3 install -r requirements.txt
 ```
 
-
-4. Set up Flask application and run it.
+5. Set up Flask application and run it.
 
 ```bash
 export FLASK_APP=application.py
@@ -36,4 +35,4 @@ export FLASK_APP=application.py
 flask run
 ```
 
-5. Navigate to URL provided by Flask. 
+6. Navigate to URL provided by Flask. 
