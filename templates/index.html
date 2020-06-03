@@ -10,7 +10,7 @@
 			function validateForm() {
 			  	var input = document.forms["add_channel"]["channel_name"].value;
 			  	if (input == "" || input == null) {
-			    	alert("Fill in your name");
+			    	alert("Fill in channel's name");
 			    	return false;
 			  	};
 			};
@@ -19,16 +19,16 @@
 	<body class="container">
 		<div class="header">
 			<h1>Hello, {{ username }} </h1>
-			<a href="{{ url_for ('change_username') }}">change name</a>
+			<a href="{{ url_for ('logout') }}">log out</a>
 		</div>
 		<div class="channels">
 			<h2>Choose from existing channels</h2>
-				{% if not channels_ids %}
+				{% if not channels %}
 				<h3>No channels</h3>
 				{% endif %}
 
-				{% for id in channels_ids %}
-				<a href="{{ url_for('channel', channel_id=id) }}">{{ channels_ids[id] }}</a>
+				{% for channel in channels %}
+				<a href="{{ url_for('channel', channel_id=channel) }}">{{ channels[channel]["name"] }}</a>
 				{% endfor %}
 		</div>
 		<div class="channels">
