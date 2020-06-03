@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#import functions from channels.py
+
 
 import os
 # To generate uuid
@@ -47,8 +49,7 @@ def login():
 @app.route("/logout", methods=["GET"])
 def logout():
     session.clear()
-    # session.pop("username", None)
-    # session.pop("current_channel", None)
+
     return render_template("login.html")
 
 @app.route("/create_channel", methods=["POST"])
@@ -57,15 +58,14 @@ def create_channel():
     channel_name = request.form.get("channel_name")
 
     # Check if this channel name already exists
-    for channel in channels.values():
-        if channel["name"] == channel_name:
-            return render_template("error.html", message="This channel name already exists")
+    if is_channel_exist(channel_name):
+        return render_template("error.html", message="This channel name already exists")
 
     # Generate a random channel id
-    channel_id = str(uuid.uuid4())
+    channel_id = generate_uuid()
 
     # Add channel
-    channels[channel_id] = {"name": channel_name, "id": channel_id, "messages": OrderedDict()}
+    add_channel(channel_name, channel_id)
     
     return redirect(url_for("channel", channel_id=channel_id))
 
@@ -89,6 +89,7 @@ def on_join():
     username = session["username"]
     room = session["current_channel"]
     join_room(room)
+
     send(username + " has entered the room.", room=room)
 
 @socketio.on("leave")
@@ -97,6 +98,7 @@ def on_leave():
     username = session["username"]
     room = session["current_channel"]
     leave_room(room)
+
     send(username + " has left the room.", room=room)
 
 @socketio.on("send message")
@@ -106,7 +108,7 @@ def send_message(data):
     channel_id = room
 
     # Generate a message id
-    message_id  = str(uuid.uuid4())
+    message_id  = generate_uuid()
 
     # Compile a message
     message_text = data["message"]
@@ -115,12 +117,9 @@ def send_message(data):
 
     message = {"id": message_id, "message_text": message_text, "username": session["username"], "time": time}
 
-    # Check is there already 100 messages in this channel
-    # and delete if necessary 
+    # Check the storage limit
 
-    while len(channels[channel_id]["messages"]) >= 100:
-        # Delete the first message (FIFO)
-        channels[channel_id]["messages"].popitem(0)
+    storage_limit()
 
     # Add message id and message to ordered dictionary    
 
@@ -141,7 +140,7 @@ def delete_message(data):
         emit("user cant delete message", room=room)
     else:
         # Delete the message
-        channels[channel_id]["messages"].pop(message_id)
+        delete(channel_id, message_id)
 
         room = channel_id
 

@@ -37,19 +37,46 @@ channels = {
     "chanel_2": chanel2,
 } 
 
+# Logic around channels
+
 def is_channel_exist(channel_name):
-    for channel_id in channels.keys():
-        if channel_id["name"] == channel_name:
+    for channel in channels.values():
+        if channel["name"] == channel_name:
             return True
 
     return False
 
 def generate_uuid():
     uuid = str(uuid.uuid4())
+    
     return uuid
 
 def add_channel(channel_name, channel_id):
-    channels[channel_id] = {"name": channel_name}
+    channels[channel_id] = {
+        "name": channel_name,
+        "id": channel_id,
+        "messages": OrderedDict()
+    }
+
+# Logic around messages
+
+def storage_limit():
+    """ 
+    Checks is there already 100 messages stored for this channel.
+    Delete old messages if necessary.
+    """
+    while len(channels[channel_id]["messages"]) >= 100:
+        # Delete the first message (FIFO)
+        channels[channel_id]["messages"].popitem(last=False)
+
+def delete(channel_id, message_id):
+    channels[channel_id]["messages"].pop(message_id)
+
+
+
+
+
+
 
 
 
