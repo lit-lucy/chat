@@ -1,10 +1,16 @@
 from collections import OrderedDict 
+
 import uuid
+
+from datetime import datetim
 
 
 # A dictionary of all channels with messages.
 # each channel stores no more than 100 messages.
 channels = {}
+
+"""
+Example of data structure. 
 
 message_1 = {
     "id": 11,
@@ -37,6 +43,8 @@ channels = {
     "chanel_2": chanel2,
 } 
 
+"""
+
 # Logic around channels
 
 def is_channel_exist(channel_name):
@@ -51,7 +59,8 @@ def generate_uuid():
     
     return uuid
 
-def add_channel(channel_name, channel_id):
+def add_channel(channel_name):
+    channel_id = generate_uuid()
     channels[channel_id] = {
         "name": channel_name,
         "id": channel_id,
@@ -62,7 +71,7 @@ def add_channel(channel_name, channel_id):
 
 def storage_limit():
     """ 
-    Checks is there already 100 messages stored for this channel.
+    Check is there already 100 messages stored for this channel.
     Delete old messages if necessary.
     """
     while len(channels[channel_id]["messages"]) >= 100:
@@ -71,6 +80,24 @@ def storage_limit():
 
 def delete(channel_id, message_id):
     channels[channel_id]["messages"].pop(message_id)
+
+def add_message(message_text, username, channel_id):
+    time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    message_id  = generate_uuid()
+    message = {
+        "id": message_id,
+        "message_text": message_text,
+        "username": username,
+        "time": time
+    }
+    # Check the storage limit
+    storage_limit()
+
+    # Add message id and message to ordered dictionary    
+    channels[channel_id]["messages"][message_id] = message
+
+    return message
+
 
 
 

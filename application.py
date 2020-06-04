@@ -1,18 +1,13 @@
 # -*- coding: utf-8 -*-
-#import functions from channels.py
 
+# Import module 
+from channel import *
 
 import os
-# To generate uuid
-import uuid
-
-from collections import OrderedDict 
 
 from flask import Flask, session, redirect, url_for, render_template, request
 from flask_session import Session
 from flask_socketio import SocketIO, emit, join_room, leave_room, send
-
-from datetime import datetime
 
 app = Flask(__name__) 
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -21,14 +16,9 @@ socketio = SocketIO(app)
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = True 
 app.config["SESSION_TYPE"] = "filesystem"
-#app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 #?? Is it right?
 Session(app)
 
-# A dictionary of all channels with messages.
-# each channel stores no more than 100 messages.
-channels = {} 
-
-
+ 
 @app.route("/")
 def index():
     # Takes recently logged in user to the index page
@@ -61,11 +51,8 @@ def create_channel():
     if is_channel_exist(channel_name):
         return render_template("error.html", message="This channel name already exists")
 
-    # Generate a random channel id
-    channel_id = generate_uuid()
-
     # Add channel
-    add_channel(channel_name, channel_id)
+    add_channel(channel_name)
     
     return redirect(url_for("channel", channel_id=channel_id))
 
@@ -107,23 +94,10 @@ def send_message(data):
     room = session["current_channel"]
     channel_id = room
 
-    # Generate a message id
-    message_id  = generate_uuid()
-
-    # Compile a message
+    # Get a text of message
     message_text = data["message"]
 
-    time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    message = {"id": message_id, "message_text": message_text, "username": session["username"], "time": time}
-
-    # Check the storage limit
-
-    storage_limit()
-
-    # Add message id and message to ordered dictionary    
-
-    channels[channel_id]["messages"][message_id] = message
+    message = add_message(message_text, session["username"], channel_id)
 
     emit("announce message", {"message": message}, room=room, broadcast=True)   
 
