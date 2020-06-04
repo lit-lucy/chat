@@ -52,7 +52,7 @@ def create_channel():
         return render_template("error.html", message="This channel name already exists")
 
     # Add channel
-    add_channel(channel_name)
+    channel_id = add_channel(channel_name)
     
     return redirect(url_for("channel", channel_id=channel_id))
 
@@ -96,8 +96,9 @@ def send_message(data):
 
     # Get a text of message
     message_text = data["message"]
+    username = session["username"]
 
-    message = add_message(message_text, session["username"], channel_id)
+    message = add_message(message_text, username, channel_id)
 
     emit("announce message", {"message": message}, room=room, broadcast=True)   
 

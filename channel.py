@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 import uuid
 
-from datetime import datetim
+from datetime import datetime
 
 
 # A dictionary of all channels with messages.
@@ -55,9 +55,9 @@ def is_channel_exist(channel_name):
     return False
 
 def generate_uuid():
-    uuid = str(uuid.uuid4())
+    new_id = str(uuid.uuid4())
     
-    return uuid
+    return new_id
 
 def add_channel(channel_name):
     channel_id = generate_uuid()
@@ -67,9 +67,11 @@ def add_channel(channel_name):
         "messages": OrderedDict()
     }
 
+    return channel_id
+
 # Logic around messages
 
-def storage_limit():
+def storage_limit(channel_id):
     """ 
     Check is there already 100 messages stored for this channel.
     Delete old messages if necessary.
@@ -91,10 +93,12 @@ def add_message(message_text, username, channel_id):
         "time": time
     }
     # Check the storage limit
-    storage_limit()
+    storage_limit(channel_id)
 
     # Add message id and message to ordered dictionary    
     channels[channel_id]["messages"][message_id] = message
+
+    print(message)
 
     return message
 
